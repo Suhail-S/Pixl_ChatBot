@@ -1,0 +1,111 @@
+[
+  {
+    "group": "LEADERSHIP",
+    "members": [
+      {
+        "name": "Imran Khan",
+        "role": "Founder & CEO",
+        "image": "https://api.pixl.ae/wp-content/uploads/2025/05/DSC03792-scaled.webp"
+      }
+    ]
+  },
+  {
+    "group": "BUSINESS DEVELOPMENT",
+    "members": [
+      { "name": "Arjun Mitawalkar", "role": "Senior Manager Commercial Excellence", "image": "https://api.pixl.ae/wp-content/uploads/2025/05/Arjun-scaled.webp" },
+      { "name": "Abdullah Al-Mohammedi", "role": "Sales Executive", "image": "https://api.pixl.ae/wp-content/uploads/2025/05/43e891c21cbb5aaac354fd88715c777a7b5dd15d-scaled-e1749551315545.jpg" },
+      { "name": "Liwaa Sleit", "role": "Associate Sales Manager", "image": "https://api.pixl.ae/wp-content/uploads/2025/05/462c41e16a5d2e92f339b02f8c7766bf6dc743a9-scaled.jpg" }
+    ]
+  },
+  {
+    "group": "CREATIVE",
+    "members": [
+      { "name": "Pierre Van der Merwe", "role": "Executive Creative Director", "image": "https://api.pixl.ae/wp-content/uploads/2025/06/Pierre-scaled.jpg" },
+      { "name": "Azra Sulthana", "role": "Head of Content", "image": "https://api.pixl.ae/wp-content/uploads/2025/05/8339a4e3b099bc7fc389512d9764eb85a4406cf5-scaled-e1750311401804.jpg" },
+      { "name": "Muhammad Fahad Khan", "role": "Senior Art Director", "image": "https://api.pixl.ae/wp-content/uploads/2025/05/328ade3bc43f6a847a6fc89f3339100f017ede8e-scaled.jpg" },
+      { "name": "Mandy Azzi", "role": "Social Media Manager - Content", "image": "https://api.pixl.ae/wp-content/uploads/2025/05/Mandy-scaled.webp" },
+      { "name": "Habeeb Mohammed Ismail", "role": "Content Creator", "image": "https://api.pixl.ae/wp-content/uploads/2025/05/50484d62e59b74955eef1da32cdd9a98628415f6-scaled.jpg" },
+      { "name": "Ivan Musoke", "role": "Senior Copywriter", "image": "https://api.pixl.ae/wp-content/uploads/2025/05/db328ab3810ec7b18d8a4f50242002805febd721-scaled.jpg" },
+      { "name": "Deepanshu Jangid", "role": "Performance Copywriter", "image": "https://api.pixl.ae/wp-content/uploads/2025/05/Deepanshu--scaled.jpeg" },
+      { "name": "Bilal Ahmad", "role": "Senior Designer", "image": "https://api.pixl.ae/wp-content/uploads/2025/01/Bilal-Ahmad-Sr-Designer-1.jpg" },
+      { "name": "Ahla Saeed", "role": "Senior Designer", "image": "https://api.pixl.ae/wp-content/uploads/2025/05/Alah-scaled.jpg" },
+      { "name": "Joshua Bell-Schinzing", "role": "Senior Designer", "image": "https://api.pixl.ae/wp-content/uploads/2025/05/6647b361103d4e854a84e3cc1ba81cd5c498b549-scaled.jpg" },
+      { "name": "Monica Pawar", "role": "Graphic Designer", "image": "https://api.pixl.ae/wp-content/uploads/2025/05/578a50a8324678e42032db939daa80664eb3f409-scaled-e1749709375948.jpg" },
+      { "name": "Harshul Chandwani", "role": "Content Creator", "image": "https://api.pixl.ae/wp-content/uploads/2025/05/Harshul-scaled.jpg" },
+      { "name": "Kuba Skowroński", "role": "Design Director", "image": "https://api.pixl.ae/wp-content/uploads/2025/05/Kuba-scaled.jpg" },
+      { "name": "Kashmala Hattan", "role": "Social Media Designer", "image": "https://api.pixl.ae/wp-content/uploads/2025/05/Kashmala-2-scaled.jpg" },
+      { "name": "Marah Alachkar", "role": "Copywriter", "image": "https://api.pixl.ae/wp-content/uploads/2025/05/Mara-scaled.jpg" }
+    ]
+  },
+  {
+    "group": "EVENTS & PR",
+    "members": [
+      { "name": "Debanjana Chaudhuri", "role": "Head of PR", "image": "https://api.pixl.ae/wp-content/uploads/2025/05/Debanjana-scaled.jpg" },
+      { "name": "Valanni Magalhas", "role": "Marketing & Events Manager", "image": "https://api.pixl.ae/wp-content/uploads/2025/05/8d4c5a7dc0de565105c2fd7c86e0f681b69ffe24-e1749709414398.png" },
+      { "name": "Ivana Van Heer", "role": "Pre - Sales", "image": "https://api.pixl.ae/wp-content/uploads/2025/05/a3738d19fc88c9e290f4e3a4603a6abe63c78b61-scaled-e1749709476176.jpg" },
+      { "name": "Pranjali Somase", "role": "PR Executive", "image": "https://api.pixl.ae/wp-content/uploads/2025/05/Pranjali-scaled.jpg" },
+      { "name": "Clarita Zgheib", "role": "Event Coordinator", "image": "https://api.pixl.ae/wp-content/uploads/2025/05/Clarita-scaled.jpg" }
+    ]
+  },
+  {
+    "group": "FINANCE, HR AND ADMIN",
+    "members": [
+      { "name": "Angelique Porciuncula", "role": "Personal Assistant to CEO", "image": "https://api.pixl.ae/wp-content/uploads/2025/06/Angelique-2-scaled.jpg" },
+      { "name": "Rashmi Kapale", "role": "HR Business Partner", "image": "https://api.pixl.ae/wp-content/uploads/2025/05/5635612bcf39b45fe39f56af9f0a8f2172486468-scaled.jpg" },
+      { "name": "Shauna Mc Dermott", "role": "Talent Acquisition Lead", "image": "https://api.pixl.ae/wp-content/uploads/2025/05/b8a26a83aabca9ad087e8b0fb39ac5cfa52de4c4-scaled.jpg" },
+      { "name": "Elaiza Kate Benas", "role": "Admin Executive", "image": "https://api.pixl.ae/wp-content/uploads/2025/05/a9c70321546012dc7ecb9e6a9b810b9d107143bf-scaled-e1750311464354.jpg" },
+      { "name": "Naushad Ali", "role": "Senior Accountant", "image": "https://api.pixl.ae/wp-content/uploads/2025/05/10a26eae6efc81d07d9c91ddf135345b8bd9e385-scaled-e1749709516308.jpg" },
+      { "name": "Shenna Ocay", "role": "Accounting and Admin Executive", "image": "https://api.pixl.ae/wp-content/uploads/2025/05/Shenna-scaled.jpg" },
+      { "name": "Ravikant Ruthla", "role": "Accounts Executive", "image": "https://api.pixl.ae/wp-content/uploads/2025/05/e843bb43ff18f5fbf9611fbb6265eef007c7e798-e1749709553379.png" },
+      { "name": "Marivic Verana", "role": "Receptionist", "image": "https://api.pixl.ae/wp-content/uploads/2025/05/reception-scaled.jpg" },
+      { "name": "Suman Choudhary", "role": "FP&A Manager", "image": "https://api.pixl.ae/wp-content/uploads/2025/05/Suman-2-scaled.jpg" }
+    ]
+  },
+  {
+    "group": "MEDIA, MARKETING & DATA ANALYTICS",
+    "members": [
+      { "name": "Saloni Rohatgi", "role": "Head of Marketing, Email Marketing & Data Analytics", "image": "https://api.pixl.ae/wp-content/uploads/2025/06/Saloni--scaled.jpg" },
+      { "name": "Monisha Baskar", "role": "Media Manager", "image": "https://api.pixl.ae/wp-content/uploads/2025/05/5ed3f73851c0ce10f2c741504379c419fbfa003d-scaled-e1749709444380.jpg" },
+      { "name": "Owen Virtucio", "role": "Senior Email Marketing Specialist", "image": "https://api.pixl.ae/wp-content/uploads/2025/05/Owen-e1748339578276.jpeg" },
+      { "name": "Luwi Limbo", "role": "Email Marketing Specialist", "image": "https://api.pixl.ae/wp-content/uploads/2025/05/f9c93c92b17a7b4ccce59709ef15b5b66fcb9b7d-e1749709622522.png" },
+      { "name": "Varun Mamtani", "role": "Data Scientist", "image": "https://api.pixl.ae/wp-content/uploads/2025/05/Nil-scaled.jpg" },
+      { "name": "Shiva Sharma", "role": "Data Analyst", "image": "https://api.pixl.ae/wp-content/uploads/2025/05/ed918858fea5c101a58c78a6eede2dd1971752d5.png" },
+      { "name": "Gouthami Durgasi", "role": "Marketing Executive", "image": "https://api.pixl.ae/wp-content/uploads/2025/05/Gouthami-scaled.jpg" }
+    ]
+  },
+  {
+    "group": "PERFORMANCE MARKETING",
+    "members": [
+      { "name": "Vishal Talwal", "role": "Head of Growth Marketing", "image": "https://api.pixl.ae/wp-content/uploads/2025/06/Vishal-scaled.jpg" },
+      { "name": "Amarjeet Singh", "role": "Paid Media Manager", "image": "https://api.pixl.ae/wp-content/uploads/2025/05/efdb8875d41a8a171a16f74fd234cf01ba442e12-e1750311775872.png" },
+      { "name": "Vasudev Rana", "role": "Paid Media Executive", "image": "https://api.pixl.ae/wp-content/uploads/2025/05/3ee15cff544712e1e5d3d9f40936ee832e85576e-e1749709718552.png" },
+      { "name": "Prashant Joshi", "role": "FB Ads Specialist", "image": "https://api.pixl.ae/wp-content/uploads/2025/05/57fe1ee3b165f026beeddb98e1edcadada7dc449-e1750311970760.png" },
+      { "name": "Neha Gaba", "role": "Digital Marketing Manager", "image": "https://api.pixl.ae/wp-content/uploads/2025/05/Neha-.jpg" }
+    ]
+  },
+  {
+    "group": "STRATEGY & ACCOUNT MANAGEMENT",
+    "members": [
+      { "name": "Sanjay Chaudhari", "role": "Head - Business Operations and Strategy", "image": "https://api.pixl.ae/wp-content/uploads/2025/05/a0038304992a97c3169f9d25e79c60a7bd7e66b4-scaled.jpg" },
+      { "name": "Omnia Mohammed", "role": "Head of Client Success", "image": "https://api.pixl.ae/wp-content/uploads/2025/05/a98b278436003ef34e94023ce624503f04bda299-e1749709760366.png" },
+      { "name": "Urooj Husain", "role": "Director - Client Success", "image": "https://api.pixl.ae/wp-content/uploads/2025/06/Urooj-2-scaled.jpg" },
+      { "name": "Mansi Patel", "role": "Senior Account Manager", "image": "https://api.pixl.ae/wp-content/uploads/2025/05/ceb1df17e46025e5853b93cb2c987f60d2c899c3-scaled-e1749709788264.jpg" },
+      { "name": "Anushriya Das", "role": "Account Manager", "image": "https://api.pixl.ae/wp-content/uploads/2025/05/6562b97be8e62da6c28d78ba5cef961e201ce985-scaled.jpg" },
+      { "name": "Vishwa Patni", "role": "Senior Account Executive", "image": "https://api.pixl.ae/wp-content/uploads/2025/05/0755a28e48b929f4a46a85c75fabee28d48b6891-scaled.jpg" },
+      { "name": "Dineshika Irangani Yatawathurage", "role": "Tele Sales Executive", "image": "https://api.pixl.ae/wp-content/uploads/2025/06/Dineshika-2-scaled.jpg" },
+      { "name": "Divya Balakrishnan", "role": "Account Executive", "image": "https://api.pixl.ae/wp-content/uploads/2025/05/Divya-scaled.jpg" },
+      { "name": "Haider Habib", "role": "Account Executive", "image": "https://api.pixl.ae/wp-content/uploads/2025/05/618442c1f55c69fa9f9ff41d5231d1d937bd8793-scaled.jpg" },
+      { "name": "Revanth Selvan", "role": "Account Executive", "image": "https://api.pixl.ae/wp-content/uploads/2025/05/26c5daeacdd20939050e702caecdaf6c610c31d0-scaled.jpg" },
+      { "name": "James Donovan", "role": "Senior Account Manager", "image": "https://api.pixl.ae/wp-content/uploads/2025/05/Jamie-scaled.jpg" }
+    ]
+  },
+  {
+    "group": "TECH",
+    "members": [
+      { "name": "Venkatesan Rajagopal", "role": "Head of Technology", "image": "https://api.pixl.ae/wp-content/uploads/2025/05/6eafbf86b19db0c27643dd6a03036b71aa833115.png" },
+      { "name": "Felix Edmund Madamesila", "role": "Data Integration Specialist", "image": "https://api.pixl.ae/wp-content/uploads/2025/05/d495191692277a1dcc25fd0ea1a3c14e007dad58-e1749709858696.png" },
+      { "name": "Omer Hamid", "role": "Business Systems Manager", "image": "https://api.pixl.ae/wp-content/uploads/2025/05/ef774f3cc451deabd5bd68c4336c749e8675b1e0-scaled-e1749709888324.jpg" },
+      { "name": "Ramadevan S", "role": "Product Designer", "image": "https://api.pixl.ae/wp-content/uploads/2025/05/102e620bee57e7ca0b2aa37ea8349fcc35e5cddb-e1749709920802.png" }
+    ]
+  }
+]
