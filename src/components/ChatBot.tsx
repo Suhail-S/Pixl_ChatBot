@@ -98,7 +98,7 @@ export const ChatBot: React.FC = () => {
           }
         });
       }
-    } catch (err) {
+    } catch {
       addMessage({ sender: "bot", text: "Sorry, something went wrong contacting the AI service." });
     }
     setIsLoading(false);
@@ -125,13 +125,18 @@ export const ChatBot: React.FC = () => {
           <div className="flex flex-col items-center mt-20 text-center space-y-5">
             <div className="text-lg font-semibold text-gray-700 dark:text-blue-100">
               👋 Welcome to Pixl.ae — Where Ideas Become Iconic.<br />
-              What best describes you?<br />
-              <span className="text-indigo-700 dark:text-blue-300 font-bold">Broker</span>,{' '}
-              <span className="text-indigo-700 dark:text-blue-300 font-bold">Real Estate Developer</span>,{' '}
-              <span className="text-indigo-700 dark:text-blue-300 font-bold">Applicant</span>,{' '}
-              <span className="text-indigo-700 dark:text-blue-300 font-bold">Vendor/Partner</span>{' '}
-              or{' '}
-              <span className="text-indigo-700 dark:text-blue-300 font-bold">Other</span>?
+              Whether you&apos;re here for standout branding, digital strategy, or immersive design — we&apos;re ready to help.<br />
+              To better assist you, could you tell us what best describes you?<br />
+              <span className="text-indigo-700 dark:text-blue-300 font-bold">Broker</span>
+              {' '}– I represent clients or listings and need marketing/branding support.<br />
+              <span className="text-indigo-700 dark:text-blue-300 font-bold">Real Estate Developer</span>
+              {' '}– I’m launching or managing a property development.<br />
+              <span className="text-indigo-700 dark:text-blue-300 font-bold">Applicant</span>
+              {' '}– I’m exploring job or internship opportunities.<br />
+              <span className="text-indigo-700 dark:text-blue-300 font-bold">Vendor/Partner</span>
+              {' '}– I offer services or want to collaborate.<br />
+              <span className="text-indigo-700 dark:text-blue-300 font-bold">Other</span>
+              {' '}– I have a different question or would like to chat with the bot.
             </div>
             <div className="flex flex-col items-center gap-2 mt-4">
               {exampleQuestions.map((q) => (
@@ -171,13 +176,13 @@ export const ChatBot: React.FC = () => {
               >
                 <ReactMarkdown
                   components={{
-                    strong: ({ node, ...props }) => (
+                    strong: (props) => (
                       <strong className="font-semibold text-indigo-700 dark:text-blue-200" {...props} />
                     ),
-                    ul: ({ node, ...props }) => (
+                    ul: (props) => (
                       <ul className="list-disc ml-5 mb-2" {...props} />
                     ),
-                    li: ({ node, ...props }) => (
+                    li: (props) => (
                       <li className="mb-1" {...props} />
                     ),
                   }}
