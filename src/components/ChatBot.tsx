@@ -20,10 +20,11 @@ export const ChatBot: React.FC = () => {
 
   // Example questions for empty state
   const exampleQuestions = [
-    "What services does Pixl offer to support new brands?",
-    "How does Invespy help with off-plan real estate sales or marketing?",
-    "Can you explain your full-service agency approach?",
-    "What makes Pixl and Invespy unique in the UAE market?",
+    "Broker",
+    "Real Estate Developer",
+    "Applicant",
+    "Vendor/Partner",
+    "Other",
   ];
 
   // API chat handler with streaming support
@@ -123,10 +124,14 @@ export const ChatBot: React.FC = () => {
         {messages.length === 0 && (
           <div className="flex flex-col items-center mt-20 text-center space-y-5">
             <div className="text-lg font-semibold text-gray-700 dark:text-blue-100">
-              Hello, I am the AI assistant for{" "}
-              <span className="text-indigo-700 dark:text-blue-300 font-bold">Pixl</span> and{" "}
-              <span className="text-indigo-700 dark:text-blue-300 font-bold">Invespy</span>.<br />
-              Tell me what you would like to know!
+              👋 Welcome to Pixl.ae — Where Ideas Become Iconic.<br />
+              What best describes you?<br />
+              <span className="text-indigo-700 dark:text-blue-300 font-bold">Broker</span>,{' '}
+              <span className="text-indigo-700 dark:text-blue-300 font-bold">Real Estate Developer</span>,{' '}
+              <span className="text-indigo-700 dark:text-blue-300 font-bold">Applicant</span>,{' '}
+              <span className="text-indigo-700 dark:text-blue-300 font-bold">Vendor/Partner</span>{' '}
+              or{' '}
+              <span className="text-indigo-700 dark:text-blue-300 font-bold">Other</span>?
             </div>
             <div className="flex flex-col items-center gap-2 mt-4">
               {exampleQuestions.map((q) => (
