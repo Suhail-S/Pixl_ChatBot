@@ -108,7 +108,7 @@ export const ChatBot: React.FC = () => {
       {/* Header */}
       <header className="px-6 py-4 border-b flex items-center bg-white/80 dark:bg-zinc-900/80 rounded-t-lg">
         <span className="font-bold text-lg tracking-tight flex-1 text-indigo-700 dark:text-blue-200">
-          Pixl & Invespy AI Chat
+          Pixl Chat Bot
         </span>
         <Button size="sm" variant="secondary" onClick={resetChat} disabled={isLoading}>
           Reset Chat
@@ -123,9 +123,10 @@ export const ChatBot: React.FC = () => {
         {messages.length === 0 && (
           <div className="flex flex-col items-center mt-20 text-center space-y-5">
             <div className="text-lg font-semibold text-gray-700 dark:text-blue-100">
-              Hello, I am the AI assistant for{" "}
-              <span className="text-indigo-700 dark:text-blue-300 font-bold">Pixl</span> and{" "}
-              <span className="text-indigo-700 dark:text-blue-300 font-bold">Invespy</span>.<br />
+              Hello, I am AI assistant for{" "}
+              <span className="text-indigo-700 dark:text-blue-300 font-bold">Pixl.</span>{} {" "}
+              {/* <span className="text-indigo-700 dark:text-blue-300 font-bold">Invespy</span>.<br /> */}
+              <br />
               Tell me what you would like to know!
             </div>
             <div className="flex flex-col items-center gap-2 mt-4">
