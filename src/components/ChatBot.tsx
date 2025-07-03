@@ -20,20 +20,23 @@ export const ChatBot: React.FC = () => {
 
   // Example questions for empty state
   const exampleQuestions = [
-    "What services does Pixl offer to support new brands?",
-    "How does Invespy help with off-plan real estate sales or marketing?",
-    "Can you explain your full-service agency approach?",
-    "What makes Pixl and Invespy unique in the UAE market?",
+    "Broker",
+    "Real Estate Developer",
+    "Applicant",
+    "Vendor/Partner",
+    "Other",
   ];
 
   // API chat handler with streaming support
-  const handleSend = async () => {
-    const question = userMessage.trim();
+  const handleSend = async (overrideText?: string) => {
+    const question = (overrideText ?? userMessage).trim();
     if (!question || isLoading) return;
 
     addMessage({ sender: "user", text: question });
-    setUserMessage("");
-    setTimeout(() => inputRef.current?.focus(), 200);
+    if (!overrideText) {
+      setUserMessage("");
+      setTimeout(() => inputRef.current?.focus(), 200);
+    }
 
     setIsLoading(true);
 
@@ -97,7 +100,7 @@ export const ChatBot: React.FC = () => {
           }
         });
       }
-    } catch (err) {
+    } catch {
       addMessage({ sender: "bot", text: "Sorry, something went wrong contacting the AI service." });
     }
     setIsLoading(false);
@@ -123,10 +126,19 @@ export const ChatBot: React.FC = () => {
         {messages.length === 0 && (
           <div className="flex flex-col items-center mt-20 text-center space-y-5">
             <div className="text-lg font-semibold text-gray-700 dark:text-blue-100">
-              Hello, I am the AI assistant for{" "}
-              <span className="text-indigo-700 dark:text-blue-300 font-bold">Pixl</span> and{" "}
-              <span className="text-indigo-700 dark:text-blue-300 font-bold">Invespy</span>.<br />
-              Tell me what you would like to know!
+              👋 Welcome to Pixl.ae — Where Ideas Become Iconic.<br />
+              Whether you&apos;re here for standout branding, digital strategy, or immersive design — we&apos;re ready to help.<br />
+              To better assist you, could you tell us what best describes you?<br />
+              <span className="text-indigo-700 dark:text-blue-300 font-bold">Broker</span>
+              {' '}– I represent clients or listings and need marketing/branding support.<br />
+              <span className="text-indigo-700 dark:text-blue-300 font-bold">Real Estate Developer</span>
+              {' '}– I’m launching or managing a property development.<br />
+              <span className="text-indigo-700 dark:text-blue-300 font-bold">Applicant</span>
+              {' '}– I’m exploring job or internship opportunities.<br />
+              <span className="text-indigo-700 dark:text-blue-300 font-bold">Vendor/Partner</span>
+              {' '}– I offer services or want to collaborate.<br />
+              <span className="text-indigo-700 dark:text-blue-300 font-bold">Other</span>
+              {' '}– I have a different question or would like to chat with the bot.
             </div>
             <div className="flex flex-col items-center gap-2 mt-4">
               {exampleQuestions.map((q) => (
@@ -134,7 +146,7 @@ export const ChatBot: React.FC = () => {
                   key={q}
                   className="bg-indigo-50 dark:bg-blue-950/80 rounded px-3 py-2 text-sm text-gray-700 dark:text-blue-100 border border-indigo-100 dark:border-blue-900 w-fit hover:bg-indigo-100 hover:dark:bg-blue-900/80 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-400"
                   type="button"
-                  onClick={() => setUserMessage(q)}
+                  onClick={() => handleSend(q)}
                   disabled={isLoading}
                 >
                   {q}
@@ -166,13 +178,13 @@ export const ChatBot: React.FC = () => {
               >
                 <ReactMarkdown
                   components={{
-                    strong: ({ node, ...props }) => (
+                    strong: (props) => (
                       <strong className="font-semibold text-indigo-700 dark:text-blue-200" {...props} />
                     ),
-                    ul: ({ node, ...props }) => (
+                    ul: (props) => (
                       <ul className="list-disc ml-5 mb-2" {...props} />
                     ),
-                    li: ({ node, ...props }) => (
+                    li: (props) => (
                       <li className="mb-1" {...props} />
                     ),
                   }}

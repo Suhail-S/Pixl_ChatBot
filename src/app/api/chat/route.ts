@@ -1,6 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
 import pixlTeam from "@/data/pixlTeam.json";
-import pixlWork from "@/data/pixlWork.json";
+
+interface TeamMember {
+  name: string;
+  role: string;
+  image?: string;
+}
+
+interface TeamGroup {
+  group: string;
+  members: TeamMember[];
+}
 
 export const runtime = "nodejs";
 
@@ -21,19 +31,21 @@ export async function POST(req: NextRequest) {
   const lastMsg = messages.length > 0 ? messages[messages.length - 1].text.toLowerCase() : "";
   const wantsCEO = /(ceo|founder|leadership|who ?(is|leads) pixl|head)/.test(lastMsg);
   const wantsTeams = /(different|all|pixl)? ?teams?|(departments?|groups?|divisions?)/.test(lastMsg);
-  const wantsWork = /(work|case study|case studies|portfolio|project|client|campaign|examples? (of )?(work|projects|clients|done)|what has pixl done|past work|something pixl built|examples of results)/.test(lastMsg);
 
   // CEO/leadership injection
   if (wantsCEO) {
-    const team = pixlTeam;
-    const leadership = team.find((g: any) => g.group.toLowerCase().includes("leader") || g.group.toLowerCase().includes("ceo"));
+    const team: TeamGroup[] = pixlTeam as TeamGroup[];
+    const leadership = team.find(
+      (g: TeamGroup) =>
+        g.group.toLowerCase().includes("leader") ||
+        g.group.toLowerCase().includes("ceo")
+    );
     let ceoTxt = "";
-    if (leadership && leadership.members && leadership.members.length > 0) {
+    if (leadership && leadership.members.length > 0) {
       ceoTxt = "Pixl Leadership:\n";
-      leadership.members.forEach(
-        (m: any) =>
-          (ceoTxt += `- ${m.name}, ${m.role}\n`)
-      );
+      leadership.members.forEach((m: TeamMember) => {
+        ceoTxt += `- ${m.name}, ${m.role}\n`;
+      });
     } else {
       for (const g of team) {
         for (const m of g.members) {
@@ -50,15 +62,18 @@ export async function POST(req: NextRequest) {
 
   // Team injection
   if (wantsTeams) {
-    const teamGroups = pixlTeam.map(
-      (g: any) =>
-        `- ${g.group}: ` +
-        g.members
-          .slice(0, 3)
-          .map((m: any) => `${m.name} (${m.role})`)
-          .join(", ") +
-        (g.members.length > 3 ? ", ..." : "")
-    ).join("\n");
+    const team: TeamGroup[] = pixlTeam as TeamGroup[];
+    const teamGroups = team
+      .map(
+        (g: TeamGroup) =>
+          `- ${g.group}: ` +
+          g.members
+            .slice(0, 3)
+            .map((m: TeamMember) => `${m.name} (${m.role})`)
+            .join(", ") +
+          (g.members.length > 3 ? ", ..." : "")
+      )
+      .join("\n");
     enrichedPrompt =
       "Pixl Teams & Departments:\n" +
       teamGroups +
