@@ -187,7 +187,7 @@ export const ChatBot: React.FC = () => {
         {isLoading && (
           <div className="flex justify-start">
             <div className="px-4 py-2 rounded-2xl bg-gray-100 border text-gray-400 dark:bg-zinc-700 dark:text-blue-300 dark:border-blue-900 mb-2 max-w-[75%] animate-pulse">
-              Pixl & Invespy is thinking…
+              Pixl Bot is thinking…
             </div>
           </div>
         )}
