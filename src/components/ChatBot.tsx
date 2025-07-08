@@ -12,6 +12,13 @@ export const ChatBot: React.FC = () => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { messages, userMessage, setUserMessage, addMessage, resetChat } = useChatStore();
 
+  // Listen for global reset (from floating header)
+  React.useEffect(() => {
+    const onReset = () => resetChat();
+    window.addEventListener("pixl-reset-chat", onReset);
+    return () => window.removeEventListener("pixl-reset-chat", onReset);
+  }, [resetChat]);
+
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
@@ -97,43 +104,28 @@ export const ChatBot: React.FC = () => {
           }
         });
       }
-    } catch (err) {
+    } catch {
       addMessage({ sender: "bot", text: "Sorry, something went wrong contacting the AI service." });
     }
     setIsLoading(false);
   };
 
   return (
-    <div className="max-w-xl mx-auto h-[80vh] flex border border-gray-200 rounded-lg shadow-xl bg-white/60 dark:bg-zinc-900/80 relative flex-col">
-      {/* Header */}
-      <header className="px-6 py-4 border-b flex items-center bg-white/80 dark:bg-zinc-900/80 rounded-t-lg">
-        <span className="font-bold text-lg tracking-tight flex-1 text-indigo-700 dark:text-blue-200">
-          Pixl Chat Bot
-        </span>
-        <Button size="sm" variant="secondary" onClick={resetChat} disabled={isLoading}>
-          Reset Chat
-        </Button>
-      </header>
-      {/* System Prompt Notice */}
-      <div className="px-6 py-2 text-xs text-gray-600 dark:text-gray-400 bg-transparent border-b border-dashed">
-        {SYSTEM_PROMPT.split("\n")[0]}
-      </div>
+    <div className="max-w-xs w-full mx-auto h-full flex flex-col shadow-xl bg-white/60 dark:bg-zinc-900/80 text-xs">
       {/* Messages */}
-      <main className="flex-1 overflow-y-auto px-4 py-2 space-y-4">
+      <main className="flex-1 min-h-0 overflow-y-auto px-2 py-1 space-y-2 text-xs">
         {messages.length === 0 && (
-          <div className="flex flex-col items-center mt-20 text-center space-y-5">
-            <div className="text-lg font-semibold text-gray-700 dark:text-blue-100">
-              Hello, I am AI assistant for{" "}
-              <span className="text-indigo-700 dark:text-blue-300 font-bold">Pixl.</span>{} {" "}
-              {/* <span className="text-indigo-700 dark:text-blue-300 font-bold">Invespy</span>.<br /> */}
+          <div className="flex flex-col items-center mt-2 text-center space-y-2">
+            <div className="text-[11px] font-semibold text-gray-700 dark:text-blue-100 text-center leading-tight p-0 mb-2">
+              Hello, I am AI assistant for <span className="text-indigo-700 dark:text-blue-300 font-bold">Pixl.</span>
               <br />
               Tell me what you would like to know!
             </div>
-            <div className="flex flex-col items-center gap-2 mt-4">
+            <div className="flex flex-col items-center gap-1.5 w-full max-w-[220px] mx-auto">
               {exampleQuestions.map((q) => (
                 <button
                   key={q}
-                  className="bg-indigo-50 dark:bg-blue-950/80 rounded px-3 py-2 text-sm text-gray-700 dark:text-blue-100 border border-indigo-100 dark:border-blue-900 w-fit hover:bg-indigo-100 hover:dark:bg-blue-900/80 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                  className="bg-indigo-50 dark:bg-blue-950/80 rounded px-2 py-1 text-xs text-gray-700 dark:text-blue-100 w-full hover:bg-indigo-100 hover:dark:bg-blue-900/80 transition-colors focus:outline-none focus:ring-1 focus:ring-indigo-400"
                   type="button"
                   onClick={() => setUserMessage(q)}
                   disabled={isLoading}
@@ -152,7 +144,7 @@ export const ChatBot: React.FC = () => {
             {msg.sender === "user" ? (
               <div
                 className={cn(
-                  "px-4 py-2 rounded-2xl mb-2 whitespace-pre-line max-w-[75%]",
+                  "px-2 py-1 rounded-2xl mb-1 whitespace-pre-line max-w-[75%]",
                   "bg-indigo-600 text-white dark:bg-blue-900"
                 )}
               >
@@ -161,19 +153,19 @@ export const ChatBot: React.FC = () => {
             ) : (
               <div
                 className={cn(
-                  "px-4 py-2 rounded-2xl mb-2 whitespace-pre-line max-w-[75%] prose prose-indigo dark:prose-invert",
+                  "px-2 py-1 rounded-2xl mb-1 whitespace-pre-line max-w-[75%] prose prose-indigo dark:prose-invert text-xs",
                   "bg-gray-100 text-gray-900 dark:bg-zinc-700 dark:text-blue-100 border"
                 )}
               >
                 <ReactMarkdown
                   components={{
-                    strong: ({ node, ...props }) => (
+                    strong: (props) => (
                       <strong className="font-semibold text-indigo-700 dark:text-blue-200" {...props} />
                     ),
-                    ul: ({ node, ...props }) => (
+                    ul: (props) => (
                       <ul className="list-disc ml-5 mb-2" {...props} />
                     ),
-                    li: ({ node, ...props }) => (
+                    li: (props) => (
                       <li className="mb-1" {...props} />
                     ),
                   }}
@@ -186,7 +178,7 @@ export const ChatBot: React.FC = () => {
         ))}
         {isLoading && (
           <div className="flex justify-start">
-            <div className="px-4 py-2 rounded-2xl bg-gray-100 border text-gray-400 dark:bg-zinc-700 dark:text-blue-300 dark:border-blue-900 mb-2 max-w-[75%] animate-pulse">
+            <div className="px-2 py-1 rounded-2xl bg-gray-100 border text-gray-400 dark:bg-zinc-700 dark:text-blue-300 dark:border-blue-900 mb-1 max-w-[75%] animate-pulse text-xs">
               Pixl Bot is thinking…
             </div>
           </div>
@@ -195,25 +187,41 @@ export const ChatBot: React.FC = () => {
       </main>
       {/* Input Box */}
       <form
-        className="py-3 px-4 border-t flex items-center gap-2 bg-white/80 dark:bg-zinc-900/80 rounded-b-lg"
+        className="py-2 px-2 border-t flex items-center gap-1 bg-white/80 dark:bg-zinc-900/80 rounded-b-2xl"
         onSubmit={e => {
           e.preventDefault();
           handleSend();
         }}
       >
+        {/* Upload docs icon (left) */}
+        <button
+          type="button"
+          aria-label="Upload documents"
+          className="text-purple-400 hover:text-purple-600 p-1 rounded-full transition"
+          tabIndex={-1}
+        >
+          <svg width="22" height="22" fill="none" viewBox="0 0 24 24">
+            <path d="M12 16V4m0 0L7 8m5-4 5 4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            <rect x="4" y="16" width="16" height="4" rx="2" fill="currentColor" opacity="0.15"/>
+          </svg>
+        </button>
         <Input
           type="text"
           autoFocus
           ref={inputRef}
           placeholder="Type your message…"
-          className="flex-1"
+          className="flex-1 px-2 py-1 h-8 min-w-0 text-xs rounded-lg"
           value={userMessage}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) => setUserMessage(e.target.value)}
           onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => { if (e.key === "Enter" && !e.shiftKey) handleSend(); }}
           disabled={isLoading}
         />
-        <Button type="submit" disabled={isLoading || !userMessage.trim()}>
-          {isLoading ? "Sending…" : "Send"}
+        <Button
+          type="submit"
+          disabled={isLoading || !userMessage.trim()}
+          className="px-2 py-1 text-[11px] h-8 rounded-lg"
+        >
+          {isLoading ? "..." : "Send"}
         </Button>
       </form>
     </div>
