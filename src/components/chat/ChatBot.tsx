@@ -111,7 +111,7 @@ export const ChatBot: React.FC = () => {
   };
 
   return (
-    <div className="max-w-xs w-full mx-auto h-full flex flex-col shadow-xl bg-white/60 dark:bg-zinc-900/80 text-xs">
+    <div className="max-w-xs w-full mx-auto h-full flex flex-col shadow-xl bg-black text-xs">
       {/* Messages */}
       <main className="flex-1 min-h-0 overflow-y-auto px-2 py-1 space-y-2 text-xs">
         {messages.length === 0 && (
@@ -160,7 +160,7 @@ export const ChatBot: React.FC = () => {
                 <ReactMarkdown
                   components={{
                     strong: (props) => (
-                      <strong className="font-semibold text-indigo-700 dark:text-blue-200" {...props} />
+                      <strong className="font-semibold text-pink-300" {...props} />
                     ),
                     ul: (props) => (
                       <ul className="list-disc ml-5 mb-2" {...props} />
@@ -187,7 +187,7 @@ export const ChatBot: React.FC = () => {
       </main>
       {/* Input Box */}
       <form
-        className="py-2 px-2 border-t border-pink-800 flex items-center gap-1 bg-pink-900 dark:bg-zinc-900/80 rounded-b-2xl"
+        className="py-2 px-2 border-t border-pink-800 flex items-center gap-1 bg-black-950 rounded-b-2xl"
         onSubmit={e => {
           e.preventDefault();
           handleSend();
@@ -197,7 +197,7 @@ export const ChatBot: React.FC = () => {
         <button
           type="button"
           aria-label="Upload documents"
-          className="pink-400 hover:text-pink-400 p-1 rounded-full transition"
+          className="text-pink-400 hover:text-pink-300 p-1 rounded-full transition"
           tabIndex={-1}
         >
           <svg width="22" height="22" fill="none" viewBox="0 0 24 24">
