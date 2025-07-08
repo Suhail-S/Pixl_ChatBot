@@ -116,8 +116,8 @@ export const ChatBot: React.FC = () => {
       <main className="flex-1 min-h-0 overflow-y-auto px-2 py-1 space-y-2 text-xs">
         {messages.length === 0 && (
           <div className="flex flex-col items-center mt-2 text-center space-y-2">
-            <div className="text-[11px] font-semibold text-gray-700 dark:text-blue-100 text-center leading-tight p-0 mb-2">
-              Hello, I am AI assistant for <span className="text-indigo-700 dark:text-blue-300 font-bold">Pixl.</span>
+            <div className="text-[11px] font-semibold text-white text-center leading-tight p-0 mb-2">
+              Hello, I am AI assistant for <span className="text-pink-400 font-bold">Pixl.</span>
               <br />
               Tell me what you would like to know!
             </div>
@@ -125,7 +125,7 @@ export const ChatBot: React.FC = () => {
               {exampleQuestions.map((q) => (
                 <button
                   key={q}
-                  className="bg-indigo-50 dark:bg-blue-950/80 rounded px-2 py-1 text-xs text-gray-700 dark:text-blue-100 w-full hover:bg-indigo-100 hover:dark:bg-blue-900/80 transition-colors focus:outline-none focus:ring-1 focus:ring-indigo-400"
+                  className="bg-pink-950/80 rounded px-2 py-1 text-xs text-pink-200 w-full hover:bg-pink-800 hover:text-white transition-colors focus:outline-none focus:ring-1 focus:ring-pink-400"
                   type="button"
                   onClick={() => setUserMessage(q)}
                   disabled={isLoading}
@@ -145,7 +145,7 @@ export const ChatBot: React.FC = () => {
               <div
                 className={cn(
                   "px-2 py-1 rounded-2xl mb-1 whitespace-pre-line max-w-[75%]",
-                  "bg-indigo-600 text-white dark:bg-blue-900"
+                  "bg-pink-600 text-white"
                 )}
               >
                 {msg.text}
@@ -154,7 +154,7 @@ export const ChatBot: React.FC = () => {
               <div
                 className={cn(
                   "px-2 py-1 rounded-2xl mb-1 whitespace-pre-line max-w-[75%] prose prose-indigo dark:prose-invert text-xs",
-                  "bg-gray-100 text-gray-900 dark:bg-zinc-700 dark:text-blue-100 border"
+                  "bg-black text-pink-200 border border-pink-900"
                 )}
               >
                 <ReactMarkdown
@@ -178,7 +178,7 @@ export const ChatBot: React.FC = () => {
         ))}
         {isLoading && (
           <div className="flex justify-start">
-            <div className="px-2 py-1 rounded-2xl bg-gray-100 border text-gray-400 dark:bg-zinc-700 dark:text-blue-300 dark:border-blue-900 mb-1 max-w-[75%] animate-pulse text-xs">
+            <div className="px-2 py-1 rounded-2xl bg-black border border-pink-900 text-pink-300 mb-1 max-w-[75%] animate-pulse text-xs">
               Pixl Bot is thinking…
             </div>
           </div>
@@ -187,7 +187,7 @@ export const ChatBot: React.FC = () => {
       </main>
       {/* Input Box */}
       <form
-        className="py-2 px-2 border-t flex items-center gap-1 bg-white/80 dark:bg-zinc-900/80 rounded-b-2xl"
+        className="py-2 px-2 border-t border-pink-800 flex items-center gap-1 bg-pink-900 dark:bg-zinc-900/80 rounded-b-2xl"
         onSubmit={e => {
           e.preventDefault();
           handleSend();
@@ -197,7 +197,7 @@ export const ChatBot: React.FC = () => {
         <button
           type="button"
           aria-label="Upload documents"
-          className="text-purple-400 hover:text-purple-600 p-1 rounded-full transition"
+          className="pink-400 hover:text-pink-400 p-1 rounded-full transition"
           tabIndex={-1}
         >
           <svg width="22" height="22" fill="none" viewBox="0 0 24 24">
@@ -210,7 +210,7 @@ export const ChatBot: React.FC = () => {
           autoFocus
           ref={inputRef}
           placeholder="Type your message…"
-          className="flex-1 px-2 py-1 h-8 min-w-0 text-xs rounded-lg"
+          className="flex-1 px-2 py-1 h-8 min-w-0 text-xs rounded-lg bg-zinc-900/70 text-white placeholder:text-pink-400 border border-pink-900"
           value={userMessage}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) => setUserMessage(e.target.value)}
           onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => { if (e.key === "Enter" && !e.shiftKey) handleSend(); }}
@@ -219,7 +219,7 @@ export const ChatBot: React.FC = () => {
         <Button
           type="submit"
           disabled={isLoading || !userMessage.trim()}
-          className="px-2 py-1 text-[11px] h-8 rounded-lg"
+          className="px-2 py-1 text-[11px] h-8 rounded-lg bg-pink-600 hover:bg-pink-700 text-white"
         >
           {isLoading ? "..." : "Send"}
         </Button>
