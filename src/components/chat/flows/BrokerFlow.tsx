@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useChatStore } from "@/store/chatStore";
 import { useUserStore } from "@/store/userStore";
 import { Input } from "@/components/ui/input";
+import { ThinkingBubble } from "@/components/ui/ThinkingBubble"; // ✅ imported here
 
 type ScheduleFormFields = {
   company: string;
@@ -15,10 +16,10 @@ type ScheduleFormFields = {
 export const BrokerFlow: React.FC = () => {
   const { messages, addMessage } = useChatStore();
   const { addAnswer, answers } = useUserStore();
-
   const [isBotThinking, setIsBotThinking] = useState(false);
   const [showOptions, setShowOptions] = useState(false);
   const [showScheduleForm, setShowScheduleForm] = useState(false);
+  
   const [formData, setFormData] = useState<ScheduleFormFields>({
     company: "",
     fullname: "",
@@ -56,7 +57,6 @@ export const BrokerFlow: React.FC = () => {
     addMessage({ sender: "user", text: opt });
     addAnswer("broker_interest", opt);
   
-    // Start thinking first
     setIsBotThinking(true);
     setShowOptions(false);
   
@@ -67,11 +67,9 @@ export const BrokerFlow: React.FC = () => {
         setShowOptions(true);
       }
       setIsBotThinking(false);
-    }, 1000); // delay response
+    }, 1000);
   };
-  
 
-  
   const handleFormChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -86,7 +84,6 @@ export const BrokerFlow: React.FC = () => {
     addAnswer("broker_schedule_email", formData.email);
     addAnswer("broker_schedule_reach", formData.reach);
 
-    // Send all gathered answers for the session to the backend for CSV logging
     try {
       await fetch("/api/save-broker-call", {
         method: "POST",
@@ -102,7 +99,7 @@ export const BrokerFlow: React.FC = () => {
         }),
       });
     } catch (err) {
-      // fail silently for now or show toast: "There was an error saving your data"
+      // fail silently for now or show toast
     }
   };
 
@@ -120,11 +117,7 @@ export const BrokerFlow: React.FC = () => {
   }
 
   if (isBotThinking) {
-    return (
-      <div className="text-left text-xs px-3 py-1 rounded-2xl bg-black border border-pink-900 text-pink-300 mt-2 max-w-[75%] animate-pulse">
-        Pixl Bot is thinking…
-      </div>
-    );
+    return <ThinkingBubble className="mt-2 ml-2" />;
   }
 
   if (showOptions) {
