@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ThinkingBubble } from "@/components/ui/ThinkingBubble";
 import ReactMarkdown from "react-markdown";
-import { BrokerFlow } from "./flows/BrokerFlow";
+import { BrokerFlow } from "@/components/chat/flows/BrokerFlow";
 
 declare global {
   interface Window {
