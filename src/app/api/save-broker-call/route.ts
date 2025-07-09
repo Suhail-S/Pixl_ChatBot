@@ -15,14 +15,20 @@ function ensureDirExists(dir: string) {
 
 // Convert answers (object) to CSV row, using consistent columns order
 function toCsvRow(data: Record<string, any>, columns: string[]): string {
-  return columns.map((c) => `"${(data[c] ?? "").toString().replace(/"/g, '""')}"`).join(",") + "\n";
+  return columns.map((c) => {
+    const value = data[c];
+    if (Array.isArray(value)) {
+      return `"${value.map((v) => v.replace(/"/g, '""')).join("; ")}"`; // join arrays safely
+    }
+    return `"${(value ?? "").toString().replace(/"/g, '""')}"`;
+  }).join(",") + "\n";
 }
 
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
 
-    // Combine all possible fields (examples, expand if needed)
+    // All fields to be saved (add more as needed)
     const columns = [
       "timestamp",
       "sessionId",
@@ -32,16 +38,19 @@ export async function POST(req: NextRequest) {
       "fullname",
       "phone",
       "email",
-      "reach"
+      "reach",
+      "budget",
+      "selectedServices" // <-- ✅ added this line
     ];
+
     const rowData = {
       timestamp: new Date().toISOString(),
-      ...body
+      ...body,
+      selectedServices: body.selectedServices?.length > 0 ? body.selectedServices : "", // fallback to empty
     };
 
     ensureDirExists(DATA_DIR);
 
-    // Write header if file does not exist
     const writeHeader = !fs.existsSync(CSV_PATH);
     const toWrite =
       (writeHeader ? columns.join(",") + "\n" : "") +
