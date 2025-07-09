@@ -28,8 +28,10 @@ export const BrokerFlow: React.FC = () => {
   });
   const [formSubmitted, setFormSubmitted] = useState(false);
 
-  const nameMsg = messages.find((m) => m.sender === "user" && m.text.trim().length <= 30);
-  const name = nameMsg?.text.trim() || "there";
+  const nameMsg = messages.find(
+    (m) => m.sender === "user" && m.type === "text" && (m.text ?? "").trim().length <= 30
+  );
+  const name = nameMsg?.text?.trim() || "there";
   const hasName = !!nameMsg;
 
   useEffect(() => {
@@ -53,7 +55,7 @@ export const BrokerFlow: React.FC = () => {
   ];
 
   const handleSelection = (opt: string) => {
-    addMessage({ sender: "user", text: opt });
+    addMessage({ sender: "user", type: "text", text: opt });
     addAnswer("broker_interest", opt);
 
     if (opt === "Schedule a call with our broker support team") {
@@ -101,7 +103,7 @@ export const BrokerFlow: React.FC = () => {
           sessionId: typeof window !== "undefined" ? window.localStorage.getItem("sessionId") : undefined
         }),
       });
-    } catch (err) {
+    } catch {
       // fail silently for now or show toast: "There was an error saving your data"
     }
   };

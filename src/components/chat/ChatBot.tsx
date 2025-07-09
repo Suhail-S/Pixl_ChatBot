@@ -7,8 +7,8 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ThinkingBubble } from "@/components/ui/ThinkingBubble";
-import ReactMarkdown from "react-markdown";
 import { BrokerFlow } from "./flows/BrokerFlow";
+import { ChatMessageRenderer } from "./ChatMessageRenderer";
 
 declare global {
   interface Window {
@@ -19,11 +19,24 @@ declare global {
 export const ChatBot: React.FC = () => {
   const inputRef = useRef<HTMLInputElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const chatContainerRef = useRef<HTMLDivElement>(null);
   const { messages, userMessage, setUserMessage, addMessage, resetChat } = useChatStore();
   const { setUserType, resetProfile } = useUserStore();
 
   const [isLoading, setIsLoading] = useState(false);
   const [persona, setPersona] = useState<string | null>(null);
+  const [userIsScrollingUp, setUserIsScrollingUp] = useState(false);
+
+  useEffect(() => {
+    const el = chatContainerRef.current;
+    if (!el) return;
+    const onScroll = () => {
+      const atBottom = el.scrollHeight - el.scrollTop - el.clientHeight <= 10;
+      setUserIsScrollingUp(!atBottom);
+    };
+    el.addEventListener("scroll", onScroll);
+    return () => el.removeEventListener("scroll", onScroll);
+  }, []);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -42,8 +55,10 @@ export const ChatBot: React.FC = () => {
   }, [resetChat, resetProfile]);
 
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages, isLoading]);
+    if (!userIsScrollingUp) {
+      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [messages, isLoading, userIsScrollingUp]);
 
   const handleSend = async (question: string) => {
     setIsLoading(true);
@@ -53,7 +68,10 @@ export const ChatBot: React.FC = () => {
       let pendingText = "";
       let pendingIndex: number | null = null;
 
-      const chatHistory = [...messages, { sender: "user", text: question }];
+      const chatHistory = [
+        ...messages,
+        { sender: "user", type: "text" as const, text: question },
+      ];
 
       const resp = await fetch("/api/chat", {
         method: "POST",
@@ -78,7 +96,7 @@ export const ChatBot: React.FC = () => {
             if (typeof delta === "string") {
               pendingText += delta;
               if (pendingIndex === null) {
-                addMessage({ sender: "bot", text: pendingText });
+                addMessage({ sender: "bot", type: "text", text: pendingText });
                 pendingIndex = useChatStore.getState().messages.length - 1;
               } else {
                 const msgs = useChatStore.getState().messages as ChatMessage[];
@@ -90,7 +108,7 @@ export const ChatBot: React.FC = () => {
         });
       }
     } catch {
-      addMessage({ sender: "bot", text: "Sorry, something went wrong contacting the AI service." });
+      addMessage({ sender: "bot", type: "text", text: "Sorry, something went wrong contacting the AI service." });
     }
     setIsLoading(false);
   };
@@ -108,7 +126,10 @@ export const ChatBot: React.FC = () => {
 
   return (
     <div className="max-w-xs w-full mx-auto h-full flex flex-col shadow-xl bg-black text-xs">
-      <main className="flex-1 min-h-0 overflow-y-auto px-2 py-1 space-y-2 text-xs">
+      <main
+        ref={chatContainerRef}
+        className="flex-1 min-h-0 overflow-y-auto px-2 py-1 space-y-2 text-xs"
+      >
         {!persona && messages.length === 0 && (
           <div className="text-white text-center text-xs mt-2 space-y-2">
             <div>
@@ -140,24 +161,25 @@ export const ChatBot: React.FC = () => {
           </div>
         )}
 
-        {messages.map((msg, idx) => (
-          <div key={idx} className={cn("flex w-full", msg.sender === "user" ? "justify-end" : "justify-start")}>
-            <div className={cn(
-              "px-2 py-1 rounded-2xl mb-1 max-w-[75%]",
-              msg.sender === "user"
-                ? "bg-pink-600 text-white"
-                : "bg-black border border-pink-900 text-pink-300"
-            )}>
-              <ReactMarkdown
-                components={{
-                  p: (props) => (
-                    <p className="prose prose-invert break-words text-xs" {...props} />
-                  ),
-                }}
+        {messages.map((msg) => (
+          <div
+            key={msg.id}
+            className={cn("flex w-full", msg.sender === "user" ? "justify-end" : "justify-start")}
+          >
+            {msg.sender === "user" ? (
+              <div className="px-2 py-1 rounded-2xl mb-1 max-w-[75%] bg-pink-600 text-white">
+                <ChatMessageRenderer message={msg} />
+              </div>
+            ) : (
+              <div
+                className={cn(
+                  "mb-1 max-w-[75%]",
+                  msg.type === "text" && "px-2 py-1 rounded-2xl bg-black border border-pink-900 text-pink-300"
+                )}
               >
-                {msg.text}
-              </ReactMarkdown>
-            </div>
+                <ChatMessageRenderer message={msg} />
+              </div>
+            )}
           </div>
         ))}
 
@@ -180,7 +202,7 @@ export const ChatBot: React.FC = () => {
           if (!message || isLoading) return;
 
           // Always store user input
-          addMessage({ sender: "user", text: message });
+          addMessage({ sender: "user", type: "text", text: message });
           setUserMessage("");
           setTimeout(() => inputRef.current?.focus(), 200);
 
@@ -215,7 +237,7 @@ export const ChatBot: React.FC = () => {
               e.preventDefault();
               const msg = userMessage.trim();
               if (msg) {
-                addMessage({ sender: "user", text: msg });
+                addMessage({ sender: "user", type: "text", text: msg });
                 setUserMessage("");
                 setTimeout(() => inputRef.current?.focus(), 200);
                 if (persona === "Other") handleSend(msg);
