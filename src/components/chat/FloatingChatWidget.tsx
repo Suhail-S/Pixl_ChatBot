@@ -28,7 +28,7 @@ export const FloatingChatWidget: React.FC = () => {
         className={cn(
           // On mobile: full width (with safe area), right-0; on md+ like before
           "fixed z-[2147483647] bottom-[92px] right-0 md:right-8 flex flex-col",
-          "w-full max-w-full sm:w-[320px] sm:max-w-[90vw] h-[60vh] sm:h-[400px] md:h-[420px] min-h-[240px] bg-black overflow-hidden rounded-t-2xl sm:rounded-3xl shadow-2xl border-2 border-pink-700",
+          "w-full max-w-full sm:w-[320px] sm:max-w-[90vw] h-[60vh] sm:h-[300px] md:h-[520px] min-h-[240px] bg-black overflow-hidden rounded-t-2xl sm:rounded-3xl shadow-2xl border-2 border-pink-700",
           "transition-all duration-300",
           isOpen
             ? "opacity-100 pointer-events-auto"
