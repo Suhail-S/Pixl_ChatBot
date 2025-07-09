@@ -1,7 +1,7 @@
 "use client";
 import React, { useRef, useEffect, useState } from "react";
 import { SYSTEM_PROMPT } from "@/lib/systemPrompt";
-import { useChatStore } from "@/store/chatStore";
+import { useChatStore, type ChatMessage } from "@/store/chatStore";
 import { useUserStore } from "@/store/userStore";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -9,7 +9,12 @@ import { Input } from "@/components/ui/input";
 import { ThinkingBubble } from "@/components/ui/ThinkingBubble";
 import ReactMarkdown from "react-markdown";
 import { BrokerFlow } from "./flows/BrokerFlow";
-// @ts-ignore
+
+declare global {
+  interface Window {
+    userStore: typeof useUserStore;
+  }
+}
 
 export const ChatBot: React.FC = () => {
   const inputRef = useRef<HTMLInputElement>(null);
@@ -22,7 +27,6 @@ export const ChatBot: React.FC = () => {
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      // @ts-ignore
       window.userStore = useUserStore;
     }
   }, []);
@@ -77,8 +81,9 @@ export const ChatBot: React.FC = () => {
                 addMessage({ sender: "bot", text: pendingText });
                 pendingIndex = useChatStore.getState().messages.length - 1;
               } else {
-                (useChatStore.getState().messages[pendingIndex] as any).text = pendingText;
-                useChatStore.setState((state) => ({ messages: [...state.messages] }));
+                const msgs = useChatStore.getState().messages as ChatMessage[];
+                msgs[pendingIndex].text = pendingText;
+                useChatStore.setState({ messages: [...msgs] });
               }
             }
           } catch {}
@@ -135,8 +140,6 @@ export const ChatBot: React.FC = () => {
           </div>
         )}
 
-        {persona === "Broker" && <BrokerFlow />}
-
         {messages.map((msg, idx) => (
           <div key={idx} className={cn("flex w-full", msg.sender === "user" ? "justify-end" : "justify-start")}>
             <div className={cn(
@@ -147,7 +150,7 @@ export const ChatBot: React.FC = () => {
             )}>
               <ReactMarkdown
                 components={{
-                  p: ({ node, ...props }) => (
+                  p: (props) => (
                     <p className="prose prose-invert break-words text-xs" {...props} />
                   ),
                 }}
@@ -157,6 +160,8 @@ export const ChatBot: React.FC = () => {
             </div>
           </div>
         ))}
+
+        {persona === "Broker" && <BrokerFlow />}
 
         {isLoading && (
           <div className="flex justify-start">

@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { persist } from "zustand/middleware";
 
 export type Sender = "user" | "bot";
 export interface ChatMessage {
@@ -14,13 +15,16 @@ interface ChatState {
   resetChat: () => void;
 }
 
-export const useChatStore = create<ChatState>((set) => ({
-  messages: [],
-  userMessage: "",
-  setUserMessage: (msg: string) => set({ userMessage: msg }),
-  addMessage: (msg: ChatMessage) =>
-    set((state) => ({
-      messages: [...state.messages, msg],
-    })),
-  resetChat: () => set({ messages: [], userMessage: "" }),
-}));
+export const useChatStore = create<ChatState>()(
+  persist(
+    (set) => ({
+      messages: [],
+      userMessage: "",
+      setUserMessage: (msg: string) => set({ userMessage: msg }),
+      addMessage: (msg: ChatMessage) =>
+        set((state) => ({ messages: [...state.messages, msg] })),
+      resetChat: () => set({ messages: [], userMessage: "" }),
+    }),
+    { name: "chat-store" }
+  )
+);
