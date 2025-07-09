@@ -4,7 +4,7 @@ import path from "path";
 
 // Target CSV directory and file
 const DATA_DIR = path.join(process.cwd(), "user", "data");
-const CSV_PATH = path.join(DATA_DIR, "broker_calls.csv");
+const CSV_PATH = path.join(DATA_DIR, "broker_leads.csv");
 
 // Ensure directory exists
 function ensureDirExists(dir: string) {
@@ -28,11 +28,11 @@ export async function POST(req: NextRequest) {
       "sessionId",
       "broker_name",
       "broker_interest",
-      "broker_schedule_company",
-      "broker_schedule_fullname",
-      "broker_schedule_phone",
-      "broker_schedule_email",
-      "broker_schedule_reach"
+      "company",
+      "fullname",
+      "phone",
+      "email",
+      "reach"
     ];
     const rowData = {
       timestamp: new Date().toISOString(),

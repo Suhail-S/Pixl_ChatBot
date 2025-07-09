@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useChatStore } from "@/store/chatStore";
 import { useUserStore } from "@/store/userStore";
 import { Input } from "@/components/ui/input";
-import { ThinkingBubble } from "@/components/ui/ThinkingBubble"; // ✅ imported here
+import { ThinkingBubble } from "@/components/ui/ThinkingBubble";
 
 type ScheduleFormFields = {
   company: string;
@@ -19,7 +19,7 @@ export const BrokerFlow: React.FC = () => {
   const [isBotThinking, setIsBotThinking] = useState(false);
   const [showOptions, setShowOptions] = useState(false);
   const [showScheduleForm, setShowScheduleForm] = useState(false);
-  
+  const [showDigitalKitForm, setShowDigitalKitForm] = useState(false);
   const [formData, setFormData] = useState<ScheduleFormFields>({
     company: "",
     fullname: "",
@@ -56,13 +56,15 @@ export const BrokerFlow: React.FC = () => {
   const handleSelection = (opt: string) => {
     addMessage({ sender: "user", text: opt });
     addAnswer("broker_interest", opt);
-  
+
     setIsBotThinking(true);
     setShowOptions(false);
-  
+
     setTimeout(() => {
       if (opt === "Schedule a call with our broker support team") {
         setShowScheduleForm(true);
+      } else if (opt === "Get a digital kit of available projects") {
+        setShowDigitalKitForm(true);
       } else {
         setShowOptions(true);
       }
@@ -78,28 +80,34 @@ export const BrokerFlow: React.FC = () => {
   const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setFormSubmitted(true);
-    addAnswer("broker_schedule_company", formData.company);
-    addAnswer("broker_schedule_fullname", formData.fullname);
-    addAnswer("broker_schedule_phone", formData.phone);
-    addAnswer("broker_schedule_email", formData.email);
-    addAnswer("broker_schedule_reach", formData.reach);
+
+    // Save form data into the store
+    addAnswer("company", formData.company);
+    addAnswer("fullname", formData.fullname);
+    addAnswer("phone", formData.phone);
+    addAnswer("email", formData.email);
+    addAnswer("reach", formData.reach);
+
+    // Create a fresh snapshot of answers after setting
+    const finalAnswers = {
+      ...answers,
+      company: formData.company,
+      fullname: formData.fullname,
+      phone: formData.phone,
+      email: formData.email,
+      reach: formData.reach,
+      sessionId: typeof window !== "undefined" ? window.localStorage.getItem("sessionId") : undefined,
+      timestamp: new Date().toISOString()
+    };
 
     try {
       await fetch("/api/save-broker-call", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          ...answers,
-          broker_schedule_company: formData.company,
-          broker_schedule_fullname: formData.fullname,
-          broker_schedule_phone: formData.phone,
-          broker_schedule_email: formData.email,
-          broker_schedule_reach: formData.reach,
-          sessionId: typeof window !== "undefined" ? window.localStorage.getItem("sessionId") : undefined
-        }),
+        body: JSON.stringify(finalAnswers),
       });
     } catch (err) {
-      // fail silently for now or show toast
+      console.error("Failed to submit form:", err);
     }
   };
 
@@ -154,98 +162,65 @@ export const BrokerFlow: React.FC = () => {
     );
   }
 
-  if (showScheduleForm) {
-    if (formSubmitted) {
-      return (
-        <div className="text-white text-center mt-6 space-y-2">
-          <div className="text-pink-400 font-semibold text-lg">Thank you, {name}!</div>
-          <div className="text-xs">We’ve received your details. Our team will reach out to you soon.</div>
-        </div>
-      );
-    }
-
+  if ((showScheduleForm || showDigitalKitForm) && !formSubmitted) {
     return (
       <form
         onSubmit={handleFormSubmit}
         className="rounded-md p-4 bg-black/70 border border-pink-950 space-y-2 text-xs text-white max-w-[350px] mx-auto mt-8"
       >
         <div className="text-[11px] font-semibold leading-tight mb-1 text-center">
-          Got it, {name} — we’d love to connect and learn more about how we can support your marketing goals.
+          {showScheduleForm
+            ? `Got it, ${name} — we’d love to connect and learn more about how we can support your marketing goals.`
+            : `Perfect, ${name} — we’ll make sure you get a curated digital kit of our past projects, ready to support your sales efforts. Just before we send it over, could you please share:`}
         </div>
-        <div>
-          <label className="block text-left text-[11px] mb-1 text-pink-400 font-medium">
-            Company Name
-          </label>
-          <Input
-            name="company"
-            value={formData.company}
-            onChange={handleFormChange}
-            required
-            className="mb-2"
-            placeholder="Your company name"
-          />
-        </div>
-        <div>
-          <label className="block text-left text-[11px] mb-1 text-pink-400 font-medium">
-            Your Full Name
-          </label>
-          <Input
-            name="fullname"
-            value={formData.fullname}
-            onChange={handleFormChange}
-            required
-            className="mb-2"
-            placeholder="Full name"
-          />
-        </div>
-        <div>
-          <label className="block text-left text-[11px] mb-1 text-pink-400 font-medium">
-            WhatsApp or Phone Number
-          </label>
-          <Input
-            name="phone"
-            value={formData.phone}
-            onChange={handleFormChange}
-            required
-            className="mb-2"
-            placeholder="e.g. +97150XXXXXXX"
-            type="tel"
-          />
-        </div>
-        <div>
-          <label className="block text-left text-[11px] mb-1 text-pink-400 font-medium">
-            Email Address
-          </label>
-          <Input
-            name="email"
-            value={formData.email}
-            onChange={handleFormChange}
-            required
-            className="mb-2"
-            placeholder="you@email.com"
-            type="email"
-          />
-        </div>
-        <div>
-          <label className="block text-left text-[11px] mb-1 text-pink-400 font-medium">
-            Preferred way to reach you
-          </label>
-          <Input
-            name="reach"
-            value={formData.reach}
-            onChange={handleFormChange}
-            required
-            className="mb-2"
-            placeholder="Call / WhatsApp / Email"
-          />
-        </div>
+        {Object.entries({
+          company: "Company Name",
+          fullname: "Your Full Name",
+          phone: "WhatsApp or Phone Number",
+          email: "Email Address",
+          reach: "Preferred way to reach you",
+        }).map(([key, label]) => (
+          <div key={key}>
+            <label className="block text-left text-[11px] mb-1 text-pink-400 font-medium">
+              {label}
+            </label>
+            <Input
+              name={key}
+              value={(formData as any)[key]}
+              onChange={handleFormChange}
+              required
+              className="mb-2"
+              placeholder={
+                key === "reach"
+                  ? showScheduleForm
+                    ? "Call / WhatsApp / Email"
+                    : "WhatsApp / Email"
+                  : label
+              }
+              type={key === "email" ? "email" : key === "phone" ? "tel" : "text"}
+            />
+          </div>
+        ))}
         <button
           type="submit"
           className="w-full py-2 mt-2 rounded bg-pink-800 hover:bg-pink-700 text-white font-semibold text-xs transition"
         >
-          Send Details
+          {showScheduleForm ? "Send Details" : "Submit Details"}
         </button>
       </form>
+    );
+  }
+
+  if (formSubmitted) {
+    return (
+      <div className="text-white text-center mt-6 space-y-2">
+        <div className="text-pink-400 font-semibold text-lg">Thank you, {name}!</div>
+        <div className="text-xs">
+          {showScheduleForm
+            ? "We’ve received your details. Our team will reach out to you soon."
+            : "A member of our team will reach out shortly with your curated digital kit."}
+        </div>
+      </div>
     );
   }
 
