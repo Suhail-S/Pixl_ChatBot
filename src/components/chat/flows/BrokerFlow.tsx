@@ -55,23 +55,23 @@ export const BrokerFlow: React.FC = () => {
   const handleSelection = (opt: string) => {
     addMessage({ sender: "user", text: opt });
     addAnswer("broker_interest", opt);
-
-    if (opt === "Schedule a call with our broker support team") {
-      setShowScheduleForm(true);
-      setShowOptions(false);
-      setIsBotThinking(false);
-      return;
-    }
-
+  
+    // Start thinking first
     setIsBotThinking(true);
     setShowOptions(false);
-
+  
     setTimeout(() => {
+      if (opt === "Schedule a call with our broker support team") {
+        setShowScheduleForm(true);
+      } else {
+        setShowOptions(true);
+      }
       setIsBotThinking(false);
-      setShowOptions(true);
-    }, 1000);
+    }, 1000); // delay response
   };
+  
 
+  
   const handleFormChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));

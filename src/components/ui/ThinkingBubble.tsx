@@ -10,3 +10,4 @@ export const ThinkingBubble: React.FC<{ className?: string }> = ({ className }) 
     Pixl Bot is thinking…
   </div>
 );
+
