@@ -1,38 +1,38 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useChatStore } from "@/store/chatStore";
 import { useUserStore } from "@/store/userStore";
 import { Input } from "@/components/ui/input";
 import { ThinkingBubble } from "@/components/ui/ThinkingBubble";
+import "@/app/globals.css";
 
 const serviceOptions = [
   "Digital marketing / Lead generation services",
   "Tech and CRM services",
   "Social Media services",
   "PR and Media services",
-  "Events services - Roadshows & OpenHouses",
+  "Events services - Roadshows & Open Houses",
   "Email marketing services",
 ];
-
-type ScheduleFormFields = {
-  company: string;
-  fullname: string;
-  phone: string;
-  email: string;
-  reach: string;
-  budget?: string;
-};
 
 export const BrokerFlow: React.FC = () => {
   const { messages, addMessage } = useChatStore();
   const { addAnswer, answers } = useUserStore();
+
+  const formStartRef = useRef<HTMLFormElement>(null);
+  
+  const optionsStartRef = useRef<HTMLDivElement>(null);
+
   const [isBotThinking, setIsBotThinking] = useState(false);
   const [showOptions, setShowOptions] = useState(false);
+  const [showNameRecap, setShowNameRecap] = useState(false);
   const [showScheduleForm, setShowScheduleForm] = useState(false);
   const [showDigitalKitForm, setShowDigitalKitForm] = useState(false);
   const [showServiceForm, setShowServiceForm] = useState(false);
+  const [formSubmitted, setFormSubmitted] = useState(false);
   const [selectedServices, setSelectedServices] = useState<string[]>([]);
-  const [formData, setFormData] = useState<ScheduleFormFields>({
+
+  const [formData, setFormData] = useState({
     company: "",
     fullname: "",
     phone: "",
@@ -40,38 +40,60 @@ export const BrokerFlow: React.FC = () => {
     reach: "",
     budget: "",
   });
-  const [formSubmitted, setFormSubmitted] = useState(false);
 
   const nameMsg = messages.find((m) => m.sender === "user" && m.text.trim().length <= 30);
   const name = nameMsg?.text.trim() || "there";
   const hasName = !!nameMsg;
 
+  // Scroll to center for schedule or kit
+  useEffect(() => {
+    if (showScheduleForm || showDigitalKitForm) {
+      formStartRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+  }, [showScheduleForm, showDigitalKitForm]);
+
+  // Scroll to bottom for service form (like Screenshot 2)
+
+  useEffect(() => {
+    if (showServiceForm) {
+      setTimeout(() => {
+        const form = formStartRef.current;
+        if (form) {
+          const rect = form.getBoundingClientRect();
+          const scrollY = window.scrollY + rect.top - 100; // offset by 100px
+          window.scrollTo({ top: scrollY, behavior: "smooth" });
+        }
+      }, 150); // wait for layout paint
+    }
+  }, [showServiceForm]);
+
+  useEffect(() => {
+    if (showOptions) {
+      optionsStartRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
+    }
+  }, [showOptions]);
+
   useEffect(() => {
     if (hasName) {
       addAnswer("broker_name", name);
       setIsBotThinking(true);
-      const timer = setTimeout(() => {
+      const recapTimer = setTimeout(() => setShowNameRecap(true), 1000);
+      const optionTimer = setTimeout(() => {
         setIsBotThinking(false);
         setShowOptions(true);
-      }, 1500);
-      return () => clearTimeout(timer);
+      }, 1000);
+      return () => {
+        clearTimeout(recapTimer);
+        clearTimeout(optionTimer);
+      };
     }
   }, [hasName, name, addAnswer]);
-
-  const options = [
-    "Schedule a call with our broker support team",
-    "Get a digital kit of available projects",
-    "Pick the services you're interested in",
-    "Register for upcoming project launches (learn more)",
-    "Just exploring",
-  ];
 
   const handleSelection = (opt: string) => {
     addMessage({ sender: "user", text: opt });
     addAnswer("broker_interest", opt);
     setIsBotThinking(true);
     setShowOptions(false);
-
     setTimeout(() => {
       if (opt === "Schedule a call with our broker support team") {
         setShowScheduleForm(true);
@@ -100,10 +122,8 @@ export const BrokerFlow: React.FC = () => {
   const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setFormSubmitted(true);
-
     selectedServices.forEach((s, i) => addAnswer(`service_${i + 1}`, s));
     Object.entries(formData).forEach(([key, value]) => addAnswer(key, value));
-
     const finalAnswers = {
       ...answers,
       ...formData,
@@ -111,7 +131,6 @@ export const BrokerFlow: React.FC = () => {
       sessionId: typeof window !== "undefined" ? window.localStorage.getItem("sessionId") : undefined,
       timestamp: new Date().toISOString(),
     };
-
     try {
       await fetch("/api/save-broker-call", {
         method: "POST",
@@ -123,10 +142,37 @@ export const BrokerFlow: React.FC = () => {
     }
   };
 
+  const recapBlock = showNameRecap && (
+    <>
+      <div className="flex w-full justify-start">
+        <div className="bg-black border border-pink-900 text-pink-300 rounded-2xl px-3 py-2 mb-1 max-w-[75%] text-[11px] text-left">
+          May I have your first name?
+        </div>
+      </div>
+      <div className="flex w-full justify-end">
+        <div className="bg-pink-600 text-white rounded-2xl px-3 py-1 mb-1 max-w-[75%] text-[11px] text-right">{name}</div>
+      </div>
+      {answers.broker_interest && (
+        <>
+          <div className="flex w-full justify-start">
+            <div className="bg-black border border-pink-900 text-pink-300 rounded-2xl px-3 py-2 mb-1 max-w-[75%] text-[11px] text-left">
+              Would you like to:
+            </div>
+          </div>
+          <div className="flex w-full justify-end">
+            <div className="bg-pink-600 text-white rounded-2xl px-2 py-1 mb-1 max-w-[75%] text-[11px] text-left break-words leading-snug">
+              {answers.broker_interest}
+            </div>
+          </div>
+        </>
+      )}
+    </>
+  );
+
   if (!hasName) {
     return (
       <div className="text-white text-center text-xs mt-4 space-y-2">
-        <div className="text-[11px] font-semibold leading-tight p-0">
+        <div className="text-[11px] font-semibold leading-tight">
           Great! Before we continue, may I have your first name?
         </div>
         <div className="text-pink-300 text-xs italic">
@@ -140,139 +186,95 @@ export const BrokerFlow: React.FC = () => {
 
   if (showOptions) {
     return (
-      <div className="space-y-2 text-white text-xs text-center mt-4">
-        <div className="text-[11px] font-semibold leading-tight">
+      <div ref={optionsStartRef} className="text-white text-xs text-center mt-4 px-4 max-w-[350px] mx-auto space-y-3">
+        {recapBlock}
+        <div className="text-[11px] font-semibold">
           Welcome {name} to <span className="text-pink-400 font-bold">Pixl.ae</span> — Amazing! Here’s how we support brokers:
         </div>
-        <ul className="text-left text-[10px] ml-3 list-disc list-inside space-y-1 mt-2">
+        <ul className="text-left text-[10px] ml-3 list-disc list-inside space-y-1">
           {serviceOptions.map((s) => (<li key={s}>{s}</li>))}
         </ul>
         <div className="text-[11px] font-semibold mt-3">Would you like to:</div>
         <div className="flex flex-col items-center gap-1.5 w-full max-w-[220px] mx-auto">
-          {options.map((opt) => (
+          {[
+            "Schedule a call with our broker support team",
+            "Get a digital kit of available projects",
+            "Pick the services you're interested in",
+            "Register for upcoming project launches (learn more)",
+            "Just exploring",
+          ].map((opt) => (
             <button
               key={opt}
               className="bg-pink-950/80 rounded px-2 py-1 text-xs text-pink-200 w-full hover:bg-pink-800 hover:text-white"
               onClick={() => handleSelection(opt)}
-            >{opt}</button>
+            >
+              {opt}
+            </button>
           ))}
         </div>
+        <div className="h-3" />
       </div>
     );
   }
 
-  if (formSubmitted && showServiceForm) {
-    return (
-      <div className="text-white text-center mt-6 space-y-3">
-        <div className="text-pink-400 font-semibold text-lg">Thank you, {name}!</div>
-        <div className="text-xs whitespace-pre-line">
-          Awesome — we've noted your interest in:
-          {selectedServices.map((s) => `\n✅ ${s}`).join("")}
-        </div>
-        <div className="text-xs">
-          A member of our broker support team will be in touch shortly to walk you through tailored solutions for your selected services.
-        </div>
+  const renderFormFields = (keys: string[]) =>
+    keys.map((key) => (
+      <div key={key}>
+        <label className="block text-left text-[11px] mb-1 text-pink-400 font-medium">
+          {key === "reach" ? "Preferred way to reach you" : key === "budget" ? "Estimated Budget" : key.charAt(0).toUpperCase() + key.slice(1)}
+        </label>
+        <Input
+          name={key}
+          value={(formData as any)[key]}
+          onChange={handleFormChange}
+          required={key !== "budget"}
+          className="mb-2"
+          placeholder={
+            key === "reach" ? "Call / WhatsApp / Email" :
+            key === "budget" ? "100,000" :
+            key.charAt(0).toUpperCase() + key.slice(1)
+          }
+        />
       </div>
-    );
-  }
+    ));
 
   if (showServiceForm && !formSubmitted) {
     return (
-      <form
-        onSubmit={handleFormSubmit}
-        className="rounded-md p-4 bg-black/70 border border-pink-950 space-y-2 text-xs text-white max-w-[350px] mx-auto mt-8"
-      >
-        <div className="text-[11px] font-semibold mb-2">
-          Please pick the servcies you interested in:
-        </div>
-        <div className="space-y-1 text-[10px]">
-          {serviceOptions.map((service) => (
-            <label key={service} className="block">
-              <input
-                type="checkbox"
-                checked={selectedServices.includes(service)}
-                onChange={() => handleServiceToggle(service)}
-                className="mr-2"
-              />
-              {service}
-            </label>
-          ))}
-        </div>
-
-        {Object.entries({
-          fullname: "Full Name",
-          company: "Company Name (if any)",
-          phone: "Phone or WhatsApp Number",
-          email: "Email Address",
-          reach: "Preferred Contact Method (Call / WhatsApp / Email)",
-          budget: "Estimated Budget (for selected services)",
-        }).map(([key, label]) => (
-          <div key={key}>
-            <label className="block text-left text-[11px] mb-1 text-pink-400 font-medium">
-              {label}
-            </label>
-            <Input
-              name={key}
-              value={(formData as any)[key]}
-              onChange={handleFormChange}
-              required={key !== "budget"}
-              className="mb-2"
-              placeholder={label}
+      <form ref={formStartRef} onSubmit={handleFormSubmit} className="bg-black/70 p-4 text-xs text-white max-w-[350px] mx-auto mt-4 space-y-2 rounded">
+        {recapBlock}
+        <div className="text-[11px] font-semibold mb-2">Please select the services you're interested in</div>
+        {serviceOptions.map((service) => (
+          <label key={service} className="block text-[10px] text-left">
+            <input
+              type="checkbox"
+              checked={selectedServices.includes(service)}
+              onChange={() => handleServiceToggle(service)}
+              className="mr-2"
             />
-          </div>
+            {service}
+          </label>
         ))}
-
-        <button
-          type="submit"
-          className="w-full py-2 mt-2 rounded bg-pink-800 hover:bg-pink-700 text-white font-semibold text-xs transition"
-        >Submit Preferences</button>
+        {renderFormFields(["fullname", "company", "phone", "email", "reach", "budget"])}
+        <button type="submit" className="w-full py-2 mt-2 rounded bg-pink-800 hover:bg-pink-700 text-white font-semibold text-xs transition">
+          Submit Preferences
+        </button>
       </form>
     );
   }
 
   if ((showScheduleForm || showDigitalKitForm) && !formSubmitted) {
     return (
-      <form
-        onSubmit={handleFormSubmit}
-        className="rounded-md p-4 bg-black/70 border border-pink-950 space-y-2 text-xs text-white max-w-[350px] mx-auto mt-8"
-      >
-        <div className="text-[11px] font-semibold leading-tight mb-1 text-center">
+      <form ref={formStartRef} onSubmit={handleFormSubmit} className="bg-black/70 p-4 text-xs text-white max-w-[350px] mx-auto mt-4 space-y-2 rounded">
+        {recapBlock}
+        <div className="text-[11px] font-semibold text-center mb-2">
           {showScheduleForm
             ? `Got it, ${name} — we’d love to connect and learn more about how we can support your marketing goals.`
-            : `Perfect, ${name} — we’ll make sure you get a curated digital kit of our past projects, ready to support your sales efforts. Just before we send it over, could you please share:`}
+            : `Perfect, ${name} — we’ll send you a digital kit of our past projects to support your sales efforts.`}
         </div>
-        {Object.entries({
-          company: "Company Name",
-          fullname: "Your Full Name",
-          phone: "WhatsApp or Phone Number",
-          email: "Email Address",
-          reach: "Preferred way to reach you",
-        }).map(([key, label]) => (
-          <div key={key}>
-            <label className="block text-left text-[11px] mb-1 text-pink-400 font-medium">
-              {label}
-            </label>
-            <Input
-              name={key}
-              value={(formData as any)[key]}
-              onChange={handleFormChange}
-              required
-              className="mb-2"
-              placeholder={
-                key === "reach"
-                  ? showScheduleForm
-                    ? "Call / WhatsApp / Email"
-                    : "WhatsApp / Email"
-                  : label
-              }
-              type={key === "email" ? "email" : key === "phone" ? "tel" : "text"}
-            />
-          </div>
-        ))}
-        <button
-          type="submit"
-          className="w-full py-2 mt-2 rounded bg-pink-800 hover:bg-pink-700 text-white font-semibold text-xs transition"
-        >{showScheduleForm ? "Send Details" : "Submit Details"}</button>
+        {renderFormFields(["fullname", "company", "phone", "email", "reach"])}
+        <button type="submit" className="w-full py-2 mt-2 rounded bg-pink-800 hover:bg-pink-700 text-white font-semibold text-xs transition">
+          {showScheduleForm ? "Send Details" : "Submit Details"}
+        </button>
       </form>
     );
   }
@@ -280,6 +282,7 @@ export const BrokerFlow: React.FC = () => {
   if (formSubmitted) {
     return (
       <div className="text-white text-center mt-6 space-y-2">
+        {recapBlock}
         <div className="text-pink-400 font-semibold text-lg">Thank you, {name}!</div>
         <div className="text-xs">
           {showScheduleForm

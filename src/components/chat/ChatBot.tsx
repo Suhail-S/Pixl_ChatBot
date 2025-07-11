@@ -104,11 +104,19 @@ export const ChatBot: React.FC = () => {
   ];
 
   const nameNeeded = persona === "Broker" && !messages.find((m) => m.sender === "user" && m.text.trim().length <= 30);
-  const allowInput = persona === "Other" || nameNeeded;
+  const nameEntered = messages.find(
+    (m) => m.sender === "user" && m.text.trim().length <= 30
+  );
+  
+  const allowInput = persona === "Other" || (persona === "Broker" && !nameEntered);
 
   return (
     <div className="max-w-xs w-full mx-auto h-full flex flex-col shadow-xl bg-black text-xs">
-      <main className="flex-1 min-h-0 overflow-y-auto px-2 py-1 space-y-2 text-xs">
+      {/* ✅ Add ID and scrollable area for BrokerFlow scroll */}
+      <main
+        id="chatContainer"
+        className="flex-1 min-h-0 overflow-y-auto max-h-[calc(100vh-140px)] px-2 py-1 space-y-2 text-xs"
+      >
         {!persona && messages.length === 0 && (
           <div className="text-white text-center text-xs mt-2 space-y-2">
             <div>
@@ -140,27 +148,45 @@ export const ChatBot: React.FC = () => {
           </div>
         )}
 
-        {messages.map((msg, idx) => (
-          <div key={idx} className={cn("flex w-full", msg.sender === "user" ? "justify-end" : "justify-start")}>
-            <div className={cn(
-              "px-2 py-1 rounded-2xl mb-1 max-w-[75%]",
-              msg.sender === "user"
-                ? "bg-pink-600 text-white"
-                : "bg-black border border-pink-900 text-pink-300"
-            )}>
-              <ReactMarkdown
-                components={{
-                  p: (props) => (
-                    <p className="prose prose-invert break-words text-xs" {...props} />
-                  ),
-                }}
-              >
-                {msg.text}
-              </ReactMarkdown>
-            </div>
-          </div>
-        ))}
+        {messages
+          .filter((msg) => {
+            // For Brokers, suppress short name replies — handled in BrokerFlow
+            if (persona === "Broker" && msg.sender === "user" && msg.text.trim().length <= 30) return false;
 
+            // Also suppress the selected broker_interest option (e.g. "Schedule a call...") to avoid double display
+            const brokerInterest = useUserStore.getState().answers.broker_interest;
+            if (
+              persona === "Broker" &&
+              msg.sender === "user" &&
+              msg.text === brokerInterest
+            ) {
+              return false;
+            }
+
+            return true;
+          })
+          .map((msg, idx) => (
+            <div key={idx} className={cn("flex w-full", msg.sender === "user" ? "justify-end" : "justify-start")}>
+              <div className={cn(
+                "px-2 py-1 rounded-2xl mb-1 max-w-[75%]",
+                msg.sender === "user"
+                  ? "bg-pink-600 text-white"
+                  : "bg-black border border-pink-900 text-pink-300"
+              )}>
+                <ReactMarkdown
+                  components={{
+                    p: (props) => (
+                      <p className="prose prose-invert break-words text-xs" {...props} />
+                    ),
+                  }}
+                >
+                  {msg.text}
+                </ReactMarkdown>
+              </div>
+            </div>
+          ))}
+
+        {/* ✅ Custom flow for Brokers */}
         {persona === "Broker" && <BrokerFlow />}
 
         {isLoading && (
@@ -171,37 +197,21 @@ export const ChatBot: React.FC = () => {
         <div ref={messagesEndRef} />
       </main>
 
+      {/* Chat input */}
       <form
         className="py-2 px-2 border-t border-pink-800 flex items-center gap-1 bg-black-950 rounded-b-2xl"
         onSubmit={(e) => {
           e.preventDefault();
-
           const message = userMessage.trim();
           if (!message || isLoading) return;
 
-          // Always store user input
           addMessage({ sender: "user", text: message });
           setUserMessage("");
           setTimeout(() => inputRef.current?.focus(), 200);
 
-          // Only trigger bot if persona is "Other"
-          if (persona === "Other") {
-            handleSend(message);
-          }
+          if (persona === "Other") handleSend(message);
         }}
       >
-        <button
-          type="button"
-          aria-label="Upload documents"
-          className="text-pink-400 hover:text-pink-300 p-1 rounded-full transition"
-          tabIndex={-1}
-        >
-          <svg width="22" height="22" fill="none" viewBox="0 0 24 24">
-            <path d="M12 16V4m0 0L7 8m5-4 5 4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-            <rect x="4" y="16" width="16" height="4" rx="2" fill="currentColor" opacity="0.15" />
-          </svg>
-        </button>
-
         <Input
           type="text"
           autoFocus
